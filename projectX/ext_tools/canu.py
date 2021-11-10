@@ -1,3 +1,5 @@
+import re,os
+
 from projectX.ext_tools import run_command
 
 def run_canu_correct(reads,prefix,out_dir,genome_size,min_length=1000,minOverlapLength=500,corOutCoverage=1000,n_threads=1):
@@ -13,8 +15,19 @@ def run_canu_correct(reads,prefix,out_dir,genome_size,min_length=1000,minOverlap
     cmd = "canu -correct useGrid=False {}".format((" ".join(f'{k}{v}' for k,v in cmd_args.items())))
     (stdout, stderr) = run_command(cmd)
     is_valid = False
-    #TODO create data structure with the path to the corrected reads
-    return {'data': None, 'stderr': stderr, 'stdout': stdout,'is_vald':is_valid,'cmd':cmd}
+    reads_file = os.path.join(out_dir,"{}.correctedReads.fasta.gz".format(prefix))
+    if os.path.isfile(reads_file):
+        is_valid = True
+
+    return {'data': reads_file, 'stderr': stderr, 'stdout': stdout,'is_vald':is_valid,'cmd':cmd}
 
 def get_canu_version():
-    return
+    cmd = 'canu --version'
+    (stdout, stderr) = run_command(cmd)
+    is_valid = False
+    version = None
+    if re.search("^canu ",stdout):
+        version = stdout.replace('canu ')
+        is_valid = True
+
+    return {'data': version, 'stderr': stderr, 'stdout': stdout, 'is_vald': is_valid, 'cmd': cmd}
