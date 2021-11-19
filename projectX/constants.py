@@ -1,5 +1,8 @@
-ASSEMBLERS = [
-    'spades', 'skesa', 'megahit', 'flye', 'canu'
+NANOPORE_ASSEMBLERS = [
+    'flye', 'canu'
+]
+ILLUMINA_ASSEMBLERS = [
+    'spades', 'skesa', 'megahit'
 ]
 
 POLISHERS = [ 'meddaka','pilon']
@@ -67,4 +70,44 @@ SAMPLE_FIELDS = [
     'detect_mapping_genes',
     'qa_messages',
     'run_params'
+]
+
+SAMPLE_FIELDS_DATATYPES = [
+    'str',
+    'str',
+    'date',
+    'str',
+    'str',
+    'list',
+    'int',
+    'int',
+    'int',
+    'int',
+    'float',
+    'float',
+    'float',
+    'float',
+    'float',
+    'float',
+    'float',
+    'float',
+    'float',
+    'list',
+    'str',
+    'str',
+    'list',
+    'str',
+    'str',
+    'str',
+    'str',
+    'int',
+    'int',
+    'int',
+    'float',
+    'str',
+    'str',
+    'dict',
+    'dict',
+    'list',
+    'dict'
 ]

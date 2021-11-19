@@ -1,12 +1,12 @@
 #!/usr/bin/python
-import glob
-import time
+import glob,sys,time
 from argparse import (ArgumentParser, FileType)
 import logging, os, sys, re, collections, operator, math, shutil, datetime
 from collections import Counter
 import pandas as pd
 import copy, statistics
 from multiprocessing import Pool
+from projectX.constants import SAMPLE_FIELDS,SAMPLE_FIELDS_DATATYPES,ILLUMINA_ASSEMBLERS,NANOPORE_ASSEMBLERS
 
 def parse_args():
     "Parse the input arguments, use '-h' for help"
@@ -27,7 +27,7 @@ def parse_args():
                         help='Treat data as single or multi source')
     parser.add_argument('--seqTech', type=str, required=True,
                         help='Explicit sequencing technology: Illumina or Nanopore')
-    parser.add_argument('--assembler', type=str, required=True,
+    parser.add_argument('--assembler', type=str, required=False,
                         help='Assembler to use default: skesa (illumina), flye (nanopore)')
     parser.add_argument('--correct', required=False,
                         help='Perform read correction',action='store_true')
@@ -65,58 +65,69 @@ def parse_args():
     return parser.parse_args()
 
 
-def illuminaWorkflow(sampleObj,R1,R2,taxaList,assembler,):
-    #lighter correction (optional)
 
-    #fastp preprocessing
-
-    #genome size estimation
-
-    #kat heterozygosity and genome size estimation
-
-    #genome coverage estimation
-
-    #read screening
-
-    #Sample type prediction (mono or multi-isolate)
-
-    #assembly type decision point
-
-    #polishing
-
-    #assembly metrics
-
-    #assembly based gene detection
-
-    #typing tool
-
-    return
+def init_sample_obj():
+    sampleObj = {}
+    for i in range(0,len(SAMPLE_FIELDS)):
+        field = SAMPLE_FIELDS[i]
+        dataType = SAMPLE_FIELDS_DATATYPES[i]
+        if dataType == 'int':
+            sampleObj[field] = 0
+        elif dataType == 'float':
+            sampleObj[field] = 0.0
+        elif dataType == 'str':
+            sampleObj[field] = ''
+        elif dataType == 'list':
+            sampleObj[field] = []
+        elif dataType == 'dict':
+            sampleObj[field] = {}
+    return sampleObj 
 
 
-def nanoporeWorkflow():
-    #fastp preprocessing
-
-    #canu correction (optional)
-
-    #genome size estimation
-
-    #read screening
-
-    #assembly
-
-    #polishing
-
-    #assembly metrics
-
-    #assembly based gene detection
-
-    #typing tool
-
-
-
-    return
 
 def main():
+    cmd_args = parse_args()
+    sample_id = cmd_args.prefix
+    
+    #init the sample object with the commandline parameters
+    sampleObj = init_sample_obj()
+    sampleObj['sample_id'] = sample_id
+    for arg in cmd_args:
+        sampleObj['params'][arg] = cmd_args.arg
+
+    #Get sequencing tech
+    sampleObj['seqTech'] = cmd_args.seqTech.lower()
+
+    selected_assembler = cmd_args.assembler
+
+    #determine initial assembler
+    if sampleObj['seqTech'] == 'nanopore':
+        if selected_assembler is not None:
+            if not selected_assembler in NANOPORE_ASSEMBLERS:
+                logger.error("Invalid assembler selected: {}, valid options are:{}".format(selected_assembler,NANOPORE_ASSEMBLERS))
+                sys.exit()
+        else:
+            selected_assembler = NANOPORE_ASSEMBLERS[0]
+    elif sampleObj['seqTech'] == 'illumina':
+        if selected_assembler is not None:
+            if not selected_assembler in ILLUMINA_ASSEMBLERS:
+                logger.error("Invalid assembler selected: {}, valid options are:{}".format(selected_assembler,ILLUMINA_ASSEMBLERS))
+                sys.exit()
+        else:
+            selected_assembler = ILLUMINA_ASSEMBLERS[0]
+
+    sampleObj['assembler'] = selected_assembler
+
+    #establish read layout
+    if R1 is not None and R2 is not None:
+        sampleObj['read_layout'] = 'single'
+    else:
+        sampleObj['read_layout'] = 'paired'
+
+
+
+
+
     return
 
 if __name__ == '__main__':
