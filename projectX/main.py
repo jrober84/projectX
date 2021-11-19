@@ -27,6 +27,8 @@ def parse_args():
                         help='Treat data as single or multi source')
     parser.add_argument('--seqTech', type=str, required=True,
                         help='Explicit sequencing technology: Illumina or Nanopore')
+    parser.add_argument('--assembler', type=str, required=True,
+                        help='Assembler to use default: skesa (illumina), flye (nanopore)')
     parser.add_argument('--correct', required=False,
                         help='Perform read correction',action='store_true')
     parser.add_argument('--trim', required=False,
@@ -62,6 +64,57 @@ def parse_args():
 
     return parser.parse_args()
 
+
+def illuminaWorkflow(sampleObj,R1,R2,taxaList,assembler,):
+    #lighter correction (optional)
+
+    #fastp preprocessing
+
+    #genome size estimation
+
+    #kat heterozygosity and genome size estimation
+
+    #genome coverage estimation
+
+    #read screening
+
+    #Sample type prediction (mono or multi-isolate)
+
+    #assembly type decision point
+
+    #polishing
+
+    #assembly metrics
+
+    #assembly based gene detection
+
+    #typing tool
+
+    return
+
+
+def nanoporeWorkflow():
+    #fastp preprocessing
+
+    #canu correction (optional)
+
+    #genome size estimation
+
+    #read screening
+
+    #assembly
+
+    #polishing
+
+    #assembly metrics
+
+    #assembly based gene detection
+
+    #typing tool
+
+
+
+    return
 
 def main():
     return
